@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
-import Link from "next/link";
 import * as yup from "yup";
-import app from "./../config/firebase/index";
+import Link from "next/link";
+import app from "../config/firebase/index";
 
 import {
   Container,
@@ -13,28 +13,28 @@ import {
   FormLabel,
   FormHelperText,
   Heading,
+  InputGroup,
+  InputLeftAddon,
 } from "@chakra-ui/react";
-import {
-  createUserWithEmailAndPassword,
-  getAuth,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const validationSchema = yup.object().shape({
   email: yup.string().email("Email inválido").required("Coloque o email"),
+  username: yup.string().required("Coloque o usuário"),
   password: yup.string().required("Coloque a senha"),
 });
 
-export default function Home() {
+export default function Cadastro() {
   const formik = useFormik({
     onSubmit: async (values, form) => {
       const auth = getAuth(app);
+      console.log(auth);
       const user = await signInWithEmailAndPassword(
         auth,
         values.email,
         values.password
       );
-      console.log(user);
+      // console.log(user);
     },
     validationSchema,
     initialValues: {
@@ -46,10 +46,7 @@ export default function Home() {
 
   return (
     <Container p={2} centerContent>
-      <Heading p={2}>Clocker.io</Heading>
-      <Box p={2}>
-        <Text>Crie sua agenda</Text>
-      </Box>
+      <Heading p={2}>Login</Heading>
       <Box>
         <FormControl id="email" p={2} isRequired>
           <FormLabel>Email</FormLabel>
@@ -79,6 +76,21 @@ export default function Home() {
           )}
         </FormControl>
 
+        <FormControl id="username" p={2} isRequired>
+          <InputGroup>
+            <InputLeftAddon>clocker.work</InputLeftAddon>
+            <Input
+              name="username"
+              type="username"
+              value={formik.values.username}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+          </InputGroup>
+          {formik.touched.username && (
+            <FormHelperText>{formik.errors.username}</FormHelperText>
+          )}
+        </FormControl>
         <Box p={2}>
           <Button
             colorScheme="blue"
@@ -90,7 +102,7 @@ export default function Home() {
           </Button>
         </Box>
       </Box>
-      <Link href="/cadastro">Ainda não tem uma conta? Cadastre-se</Link>
+      <Link href="/">Já tem cadastro? Faça login</Link>
     </Container>
   );
 }
