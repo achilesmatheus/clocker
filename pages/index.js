@@ -15,10 +15,13 @@ import {
   Heading,
 } from "@chakra-ui/react";
 import {
-  createUserWithEmailAndPassword,
   getAuth,
   signInWithEmailAndPassword,
+  setPersistence,
+  browserSessionPersistence,
 } from "firebase/auth";
+
+import { useEffect } from "react";
 
 const validationSchema = yup.object().shape({
   email: yup.string().email("Email inválido").required("Coloque o email"),
@@ -26,15 +29,24 @@ const validationSchema = yup.object().shape({
 });
 
 export default function Home() {
+  const auth = getAuth(app);
+
   const formik = useFormik({
     onSubmit: async (values, form) => {
-      const auth = getAuth(app);
-      const user = await signInWithEmailAndPassword(
-        auth,
-        values.email,
-        values.password
-      );
-      console.log(user);
+      // Firebase state persistent auth
+      setPersistence(auth, browserSessionPersistence);
+
+      try {
+        const user = await signInWithEmailAndPassword(
+          auth,
+          values.email,
+          values.password
+        );
+
+        console.log(user);
+      } catch (error) {
+        console.log("ERROR:", error);
+      }
     },
     validationSchema,
     initialValues: {
@@ -43,6 +55,10 @@ export default function Home() {
       password: "",
     },
   });
+
+  useEffect(() => {
+    console.log("Active Session: ", auth.currentUser);
+  }, [auth]);
 
   return (
     <Container p={2} centerContent>
