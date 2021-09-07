@@ -27,14 +27,14 @@ const validationSchema = yup.object().shape({
 export default function Cadastro() {
   const formik = useFormik({
     onSubmit: async (values, form) => {
-      const auth = getAuth(app);
+      const auth = getAuth();
       console.log(auth);
       const user = await signInWithEmailAndPassword(
         auth,
         values.email,
         values.password
       );
-      // console.log(user);
+      console.log(user);
     },
     validationSchema,
     initialValues: {
