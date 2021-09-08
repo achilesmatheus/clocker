@@ -20,4 +20,4 @@ const app = getApps().length
       credential: admin.credential.cert(serviceAccount),
     });
 
-export default admin;
+export default app;
