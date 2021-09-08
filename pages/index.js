@@ -2,7 +2,7 @@ import { getAuth, onAuthStateChanged } from "@firebase/auth";
 import Login from "../components/Login/Login";
 import Agenda from "../components/Agenda/Agenda";
 import { useState, useEffect } from "react";
-import app from "./../config/firebase/index";
+import { firebaseClient } from "./../config/firebase";
 
 export default function Home() {
   const [auth, setAuth] = useState({
@@ -11,7 +11,7 @@ export default function Home() {
   });
 
   useEffect(() => {
-    const authentication = getAuth(app);
+    const authentication = getAuth(firebaseClient);
     onAuthStateChanged(authentication, (user) => {
       setAuth({
         loading: false,

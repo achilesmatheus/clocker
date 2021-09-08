@@ -1,7 +1,6 @@
 import { useFormik } from "formik";
 import Link from "next/link";
 import * as yup from "yup";
-import app from "./../../config/firebase/index";
 
 import {
   Container,
@@ -14,6 +13,7 @@ import {
   FormHelperText,
   Heading,
 } from "@chakra-ui/react";
+
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -29,7 +29,7 @@ const validationSchema = yup.object().shape({
 });
 
 export default function Login() {
-  const auth = getAuth(app);
+  const auth = getAuth();
 
   const formik = useFormik({
     onSubmit: async (values, form) => {

@@ -1,14 +1,12 @@
 import { useFormik } from "formik";
 import * as yup from "yup";
 import Link from "next/link";
-import app from "../config/firebase/index";
 
 import {
   Container,
   Box,
   Input,
   Button,
-  Text,
   FormControl,
   FormLabel,
   FormHelperText,
