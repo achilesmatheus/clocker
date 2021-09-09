@@ -1,26 +1,17 @@
-import { getAuth, onAuthStateChanged } from "@firebase/auth";
-import Login from "../components/Login/Login";
-import Agenda from "../components/Agenda/Agenda";
-import { useState, useEffect } from "react";
-import { firebaseClient } from "./../config/firebase/client";
+import Login from "./login";
+import { useAuthentication } from "./../components/Auth";
+import { useRouter } from "next/dist/client/router";
+import { useEffect } from "react";
 
 export default function Home() {
-  const [auth, setAuth] = useState({
-    loading: true,
-    user: null,
-  });
+  const [authentication] = useAuthentication();
+  const router = useRouter();
 
   useEffect(() => {
-    const authentication = getAuth(firebaseClient);
-    onAuthStateChanged(authentication, (user) => {
-      setAuth({
-        loading: false,
-        user,
-      });
-    });
-  }, []);
+    authentication.user && router.push("/agenda");
+  }, [authentication, router]);
 
-  if (auth.loading) return "Carregando";
+  if (authentication.loading) return "Carregando";
 
-  return auth.user ? <Agenda /> : <Login />;
+  return <Login />;
 }

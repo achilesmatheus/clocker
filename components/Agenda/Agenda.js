@@ -1,11 +1,18 @@
 import { Button } from "@chakra-ui/button";
-import { getAuth, signOut } from "firebase/auth";
+import { useRouter } from "next/dist/client/router";
+import { useEffect } from "react";
+import { useAuthentication } from "./../Auth";
 
 export default function Agenda() {
-  const auth = getAuth();
-  function logout() {
-    signOut(auth);
-  }
+  const [authentication, { logout }] = useAuthentication();
+  const router = useRouter();
+
+  useEffect(() => {
+    !authentication.user && router.push("/");
+  }, [authentication, router]);
+
+  if (authentication.loading) return "Carregando";
+
   return (
     <div>
       <Button onClick={logout}>Sair</Button>
