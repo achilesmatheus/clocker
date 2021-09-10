@@ -1,5 +1,6 @@
 import React from "react";
 import app from "./../../config/firebase/client";
+import axios from "axios";
 
 import {
   signInWithEmailAndPassword,
@@ -20,36 +21,27 @@ export async function login({ email, password }) {
 
   try {
     await signInWithEmailAndPassword(auth, email, password);
+    return auth.currentUser;
   } catch (error) {
     console.log("LOGIN ERROR ", error);
   }
 }
 
-// export async function signup({ email, password, username }) {
-//   try {
-//     await createUserWithEmailAndPassword(auth, email, password);
-//     await login();
-//     //setupProfile(token, username)
-//   } catch (error) {
-//     console.log('SIGNUP ERRROR', error)
-//   }
-// }
-
 export async function signup({ email, password, username }) {
   console.log(email, username);
   try {
-    const user = await createUserWithEmailAndPassword(auth, email, password);
-    await login({ email, password });
-    // const { data } = await axios({
-    //   method: "POST",
-    //   url: "/api/profile",
-    //   data: {
-    //     username: username,
-    //   },
-    //   headers: {
-    //     Authentication: `Bearer ${user.getToken()}`,
-    //   },
-    // });
+    // createUserWithEmailAndPassword(auth, email, password);
+    const user = await login({ email, password });
+    const token = await user.getIdToken();
+
+    const { data } = await axios({
+      method: "POST",
+      url: "/api/profile",
+      data: { username },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   } catch (error) {
     console.log("SIGNUP ERROR: ", error);
   }
